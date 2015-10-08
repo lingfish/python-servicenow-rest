@@ -80,28 +80,26 @@ class Client(object):
             self.return_code = request.status_code
             return result['result']
 
-    def _format_query(self, query={}, query_on={}):
+    def _format_query(self, query):
         """
         The dict-to-string conversion used here was inspired by: https://github.com/locaweb/python-servicenow
-        :param query: query dict
-        :param query_on: query-on dict
+        :param query: query of type dict or string
         :return: servicenow query string
         """
-        try:
-            items = query.iteritems()  # Python 2
-            if query_on:
-                on_items = query_on.iteritems()
-        except AttributeError:
-            items = query.items()  # Python 3
-            if query_on:
-                on_items = query_on.items()
 
-        query_str = '^'.join(['%s=%s' % (field, value) for field, value in items])
+        if isinstance(query, dict):  # Dict-type query
+            try:
+                items = query.iteritems()  # Python 2
+            except AttributeError:
+                items = query.items()  # Python 3
 
-        if query_on:
-            query_str += '^' + '^'.join(['%sON%s' % (field, value) for field, value in on_items])
+            query_str = '^'.join(['%s=%s' % (field, value) for field, value in items])
+        elif isinstance(query, str):  # String-type query
+            query_str = query
+        else:
+            raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
 
-        return query_str
+        return {'sysparm_query': query_str}
 
     def _request(self, method, query, payload=None, sysid=None):
         """
@@ -120,14 +118,9 @@ class Client(object):
             url = self.url
 
         if method == 'GET':
-            if isinstance(query, dict):
-                query = self._format_query(query)
-            elif not isinstance(query, str):
-                raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
-
             request = self._session.get(
                 url,
-                params={'sysparm_query': query}
+                params=self._format_query(query)
             )
         elif method == 'POST':
             request = self._session.post(
