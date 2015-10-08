@@ -33,7 +33,9 @@ class Client(object):
 
         ## Request properties
         self.table = None
-        self.sysid = None
+
+        ## Return properties
+        self.return_code = None
 
     def _create_session(self):
         """
@@ -75,6 +77,7 @@ class Client(object):
         if 'error' in result:
             raise UnexpectedResponse("ServiceNow responded (%i): %s" % (request.status_code, result['error']['message']))
         else:
+            self.return_code = request.status_code
             return result['result']
 
     def _format_query(self, query={}, query_on={}):
@@ -117,9 +120,14 @@ class Client(object):
             url = self.url
 
         if method == 'GET':
+            if isinstance(query, dict):
+                query = self._format_query(query)
+            elif not isinstance(query, str):
+                raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
+
             request = self._session.get(
                 url,
-                params={'sysparm_query': self._format_query(query)}
+                params={'sysparm_query': query}
             )
         elif method == 'POST':
             request = self._session.post(
