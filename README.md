@@ -49,7 +49,7 @@ res = s.insert({'short_description': 'test', 'description': 'test'})
 ###### Update
 
 ```python
-res = s.get({'number': 'INC0012345'})  # Get sysid by number
+res = s.get({'number': 'INC0012345'})
 sys_id = res[0]['sys_id']
 s.update({'comments': 'test', 'description': 'test'}, sys_id)
 ```
@@ -57,7 +57,7 @@ s.update({'comments': 'test', 'description': 'test'}, sys_id)
 ###### Delete
 
 ```python
-res = s.get({'number': 'INC0012345'})  # Get sysid by number
+res = s.get({'number': 'INC0012345'})
 sys_id = res[0]['sys_id']
 s.delete(sys_id)
 ```
