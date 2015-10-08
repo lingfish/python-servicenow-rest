@@ -30,25 +30,26 @@ s = sn.Client('instance_name', 'user_name', 'password')
 s.table = 'incident'
 ```
 
-###### Get
-
+###### Get (Dict-type query)
 ```python
 res = s.get({'number': 'INC0012345'})
-print(res)
 ```
 
+###### Get (String-type query)
+```python
+res = s.get('nameINincident,task^elementLIKEstate')
+```
 
 ###### Create
 
 ```python
 res = s.insert({'short_description': 'test', 'description': 'test'})
-print(res['sys_id'])
 ```
 
 ###### Update
 
 ```python
-res = s.get({'number': 'INC0012345'})
+res = s.get({'number': 'INC0012345'})  # Get sysid by number
 sys_id = res[0]['sys_id']
 s.update({'comments': 'test', 'description': 'test'}, sys_id)
 ```
@@ -56,7 +57,7 @@ s.update({'comments': 'test', 'description': 'test'}, sys_id)
 ###### Delete
 
 ```python
-res = s.get({'number': 'INC0012345'})
+res = s.get({'number': 'INC0012345'})  # Get sysid by number
 sys_id = res[0]['sys_id']
 s.delete(sys_id)
 ```
