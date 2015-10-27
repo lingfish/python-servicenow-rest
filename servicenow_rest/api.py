@@ -80,7 +80,7 @@ class Client(object):
             self.return_code = request.status_code
             return result['result']
 
-    def _format_query(self, query, fields=None):
+    def _format_query(self, query, fields):
         """
         The dict-to-string conversion used here was inspired by: https://github.com/locaweb/python-servicenow
         :param query: query of type dict or string
@@ -101,17 +101,22 @@ class Client(object):
             raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
 
         result = {'sysparm_query': query_str}
-        if fields:
+        if fields and isinstance(fields, list):
             result.update({'sysparm_fields': fields})
+        else:
+            print type(fields)
+            raise InvalidUsage("You must pass the fields as a list")
 
-        return {result}
+        return result
 
-    def _request(self, method, query, payload=None, sysid=None, fields=None):
+    def _request(self, method, query, fields, payload=None, sysid=None):
         """
         Request wrapper. Makes sure table property is set and performs the appropriate method call.
         :param method: http verb str
         :param query: query dict
         :param payload: query payload for inserts
+        :param sysid: the sysid to operate on
+        :param fields: Comma-separated field names to return in the response
         :return: server response
         """
         if not self.table:
@@ -146,7 +151,7 @@ class Client(object):
         return self._handle_response(request, method)
 
     def get(self, query, fields=None):
-        return self._request('GET', query)
+        return self._request('GET', query, fields)
 
     def update(self, payload, sysid):
         return self._request('PUT', None, payload, sysid)
