@@ -80,10 +80,11 @@ class Client(object):
             self.return_code = request.status_code
             return result['result']
 
-    def _format_query(self, query):
+    def _format_query(self, query, fields=None):
         """
         The dict-to-string conversion used here was inspired by: https://github.com/locaweb/python-servicenow
         :param query: query of type dict or string
+        :param fields: Comma-separated field names to return in the response
         :return: servicenow query string
         """
 
@@ -99,7 +100,11 @@ class Client(object):
         else:
             raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
 
-        return {'sysparm_query': query_str}
+        result = {'sysparm_query': query_str}
+        if fields:
+            result.update({'sysparm_fields': fields})
+
+        return {result}
 
     def _request(self, method, query, payload=None, sysid=None):
         """
