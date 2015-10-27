@@ -106,7 +106,7 @@ class Client(object):
 
         return {result}
 
-    def _request(self, method, query, payload=None, sysid=None):
+    def _request(self, method, query, payload=None, sysid=None, fields=None):
         """
         Request wrapper. Makes sure table property is set and performs the appropriate method call.
         :param method: http verb str
@@ -125,7 +125,7 @@ class Client(object):
         if method == 'GET':
             request = self._session.get(
                 url,
-                params=self._format_query(query)
+                params=self._format_query(query, fields)
             )
         elif method == 'POST':
             request = self._session.post(
@@ -145,7 +145,7 @@ class Client(object):
 
         return self._handle_response(request, method)
 
-    def get(self, query):
+    def get(self, query, fields=None):
         return self._request('GET', query)
 
     def update(self, payload, sysid):
