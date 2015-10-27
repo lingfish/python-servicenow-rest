@@ -101,11 +101,11 @@ class Client(object):
             raise InvalidUsage("You must pass a query using either a dictionary or string (for advanced queries)")
 
         result = {'sysparm_query': query_str}
-        if fields and isinstance(fields, list):
-            result.update({'sysparm_fields': fields})
-        else:
-            print type(fields)
-            raise InvalidUsage("You must pass the fields as a list")
+        if fields is not None:
+            if isinstance(fields, list):
+                result.update({'sysparm_fields': ",".join(fields)})
+            else:
+                raise InvalidUsage("You must pass the fields as a list")
 
         return result
 
