@@ -21,7 +21,7 @@ class InvalidUsage(Exception):
 
 
 class Client(object):
-    base = "api/now/table"
+    base = "api/now"
 
     def __init__(self, instance, user, password, raise_on_empty=True):
         ## Connection properties
@@ -50,6 +50,10 @@ class Client(object):
 
     @property
     def url(self):
+
+        if self.table != 'attachment':
+            self.table = "/%s/%s" % ("table", self.table)
+
         url_str = 'https://%(fqdn)s/%(base)s/%(table)s' % (
             {
                 'fqdn': self.fqdn,
