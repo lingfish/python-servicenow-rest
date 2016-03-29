@@ -59,7 +59,7 @@ class Client(object):
         url_str = 'https://%(fqdn)s/%(base)s/%(table)s' % (
             {
                 'fqdn': self.fqdn,
-                'base': self.base,
+                'base': base,
                 'table': self.table
             }
         )
