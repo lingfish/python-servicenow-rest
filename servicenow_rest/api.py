@@ -50,9 +50,11 @@ class Client(object):
 
     @property
     def url(self):
-
-        if self.table != 'attachment':
-            self.table = "/%s/%s" % ("table", self.table)
+        ## Some tables uses a different base path
+        if self.table == 'attachment':
+            base = self.base
+        else:
+            base = "%s/%s" % (self.base, "table")
 
         url_str = 'https://%(fqdn)s/%(base)s/%(table)s' % (
             {
