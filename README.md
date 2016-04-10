@@ -40,6 +40,11 @@ res = s.get({'number': 'INC0012345'})
 res = s.get('nameINincident,task^elementLIKEstate')
 ```
 
+###### Get (server-side filter of returned results)
+```python
+res = s.get({'number': 'INC0012345'}, fields=['sys_id'])
+
+```
 ###### Create
 
 ```python
