@@ -8,6 +8,11 @@ For more info, see:
 
 http://wiki.servicenow.com/index.php?title=REST_API
 
+http://wiki.servicenow.com/index.php?title=Table_API
+
+http://wiki.servicenow.com/index.php?title=Tables_and_Classes
+
+http://wiki.servicenow.com/index.php?title=Encoded_Query_Strings
 
 #### Installing
 ```
@@ -22,7 +27,7 @@ $ pip install servicenow_rest
 ```python
 import servicenow_rest.api as sn
 
-s = sn.Client('instance_name', 'user_name', 'password')
+s = sn.Client('instance_name', 'user_name', 'password', raise_on_empty=True)
 ```
 
 ###### Set table

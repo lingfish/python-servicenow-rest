@@ -6,7 +6,7 @@ except ImportError:
 setup(
     name='servicenow_rest',
     packages=['servicenow_rest'],
-    version='0.2.0',
+    version='0.2.2',
     description='ServiceNow REST API Client',
     install_requires=['requests'],
     author='Robert Wikman',
@@ -14,7 +14,7 @@ setup(
     maintainer='Robert Wikman',
     maintainer_email='rbw@vault13.org',
     url='https://github.com/rbw0/python-servicenow-rest',
-    download_url='https://github.com/rbw0/python-servicenow-rest/tarball/0.2.0',
+    download_url='https://github.com/rbw0/python-servicenow-rest/tarball/0.2.2',
     keywords=['servicenow', 'rest', 'api'],
     classifiers=[],
     license='GPLv2',

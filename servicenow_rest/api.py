@@ -21,15 +21,16 @@ class InvalidUsage(Exception):
 
 
 class Client(object):
-    base = "api/now/table"
+    base = "api/now"
 
-    def __init__(self, instance, user, password):
+    def __init__(self, instance, user, password, raise_on_empty=True):
         ## Connection properties
         self.instance = instance
         self.fqdn = "%s.service-now.com" % instance
         self._user = user
         self._password = password
         self._session = self._create_session()
+        self._raise_on_empty = raise_on_empty
 
         ## Request properties
         self.table = None
@@ -49,10 +50,16 @@ class Client(object):
 
     @property
     def url(self):
+        ## Some tables uses a different base path
+        if self.table == 'attachment':
+            base = self.base
+        else:
+            base = "%s/%s" % (self.base, "table")
+
         url_str = 'https://%(fqdn)s/%(base)s/%(table)s' % (
             {
                 'fqdn': self.fqdn,
-                'base': self.base,
+                'base': base,
                 'table': self.table
             }
         )
@@ -74,11 +81,14 @@ class Client(object):
 
         result = request.json()
 
-        if 'error' in result:
-            raise UnexpectedResponse("ServiceNow responded (%i): %s" % (request.status_code, result['error']['message']))
-        else:
-            self.return_code = request.status_code
-            return result['result']
+        if request.status_code == 404 and self._raise_on_empty is False:
+            result['result'] = []
+        elif 'error' in result:
+            raise UnexpectedResponse("ServiceNow responded (%i): %s" % (request.status_code,
+                                                                        result['error']['message']))
+
+        self.return_code = request.status_code
+        return result['result']
 
     def _format_query(self, query, fields):
         """
